@@ -152,7 +152,10 @@ contract EDEX is StandardToken{
     mapping (uint256 => PriceEDEX) public prices;
     // maps verified addresses
     mapping (address => bool) public verified;
+    // maps accredited addresses
+    mapping (address => bool) public accredited;
 
+    event Accreditation(address indexed investor);
     event Verification(address indexed investor);
     event LiquidationCall(address indexed investor, uint256 amountTokens);
     event Liquidations(address indexed investor, uint256 amountTokens, uint256 etherAmount);
@@ -180,6 +183,11 @@ contract EDEX is StandardToken{
 
     modifier onlyVerified{
         require(verified[msg.sender]);
+        _;
+    }
+    
+    modifier onlyAccreditedInvestor{
+        require(accredited[msg.sender]);
         _;
     }
 
@@ -272,14 +280,28 @@ contract EDEX is StandardToken{
         Verification(investor);
     }
     
+    function accrediteInvestor(address investor) external onlyControllingWallets{
+        accredited[investor] = true;
+        Accreditation(investor);
+    }
+    
     // blacklists bot addresses using ICO whitelisted addresses
     function removeVerifiedInvestor(address investor) external onlyControllingWallets{
         verified[investor] = false;
         Verification(investor);
     }
+    
+    function removeAccreditedInvestor(address investor) external onlyControllingWallets{
+        accredited[investor] = false;
+        Accreditation(investor);
+    }
 
     function buy() external payable{
         buyTo(msg.sender);
+    }
+    
+    function buyAccredited() external payable{
+        buyToAccredited(msg.sender);
     }
 
     function buyTo(address investor) public payable onlyVerified{
@@ -289,6 +311,19 @@ contract EDEX is StandardToken{
         require(block.number >= icoStartBlock && block.number < icoEndBlock);
         uint256 icoBottomInteger = icoBottomIntegerPrice();
         uint256 tokensToBuy = safeDiv(safeMul(msg.value, currentPrice.topInteger), icoBottomInteger);
+        tokenAllocation(investor, tokensToBuy);
+        // send ether to mainWallet
+        mainWallet.transfer(msg.value);
+        Buy(msg.sender, investor, msg.value, tokensToBuy);
+    }
+    
+    function buyToAccredited(address investor) public payable onlyAccreditedInvestor{
+        require(!haltICO);
+        require(investor != address(0));
+        require(msg.value >= minInvestment);
+        require(block.number >= icoStartBlock && block.number < icoEndBlock);
+        uint256 icoBottomInteger = icoBottomIntegerPrice();
+        uint256 tokensToBuy = safeDiv(safeMul(safeDiv(safeMul(msg.value, currentPrice.topInteger), icoBottomInteger), 14), 10);
         tokenAllocation(investor, tokensToBuy);
         // send ether to mainWallet
         mainWallet.transfer(msg.value);
@@ -427,6 +462,10 @@ contract EDEX is StandardToken{
     // fallback function
     function() payable{
         require(tx.origin == msg.sender);
-        buyTo(msg.sender);
+        if (verified[msg.sender] == true){
+            buyTo(msg.sender);
+        } else if (accredited[msg.sender] == true){
+            buyToAccredited(msg.sender);
+        }
     }
 }
