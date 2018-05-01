@@ -386,7 +386,7 @@ contract EDEX is StandardToken{
         PriceEDEX storage price = prices[requestTime];
         require(price.topInteger > 0);
         uint256 liquidationValue = safeDiv(safeMul(tokens, price.bottomInteger), price.topInteger);
-        // if there is ebough ether on the contract, proceed. Otherwise, send back tokens
+        // if there is enough ether on the contract, proceed. Otherwise, send back tokens
         liquidations[investor].tokens = 0;
         if (this.balance >= liquidationValue)
             enact_liquidation_greater_equal(investor, liquidationValue, tokens);
