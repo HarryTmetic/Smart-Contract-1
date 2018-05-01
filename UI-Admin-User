@@ -1,0 +1,51 @@
+public verified -> Both
+function checkLiquidationValue(uint256 amountTokensToLiquidate) -> Both
+function balanceOf(address _owner) -> Both
+public setTrading = false -> Both
+public liquidations -> Both
+function requestLiquidation(uint256 amountTokensToLiquidate) -> Both
+
+public maxSupply = 100000000e18 -> User
+uint256 public totalSupply -> User
+public symbol = "EDEX" -> User
+public name = "Equadex" -> User
+
+public secondaryWallet -> Admin
+public priceUpdateWaitingTime = 1 hours -> Admin
+public prices -> Admin
+public priceUpdateWaitingTime = 1 hours -> Admin
+public minInvestment = 0.01 ether -> Admin
+public mainWallet -> Admin
+public icoStartBlock -> Admin
+public icoEndBlock -> Admin
+function icoBottomIntegerPrice() -> Admin
+function setGrantVestedEDEXContract(address grantVestedEDEXContractInput) -> Admin
+public grantVestedEDEXContract -> Admin
+public decimals = 18 -> Admin
+public currentPrice -> Admin
+public accredited -> Admin
+function accrediteInvestor(address investor) -> Admin
+function removeVerifiedInvestor(address investor) -> Admin
+function removeLiquidity(uint256 amount) -> Admin
+function addLiquidity() -> Admin
+function removeAccreditedInvestor(address investor) -> Admin
+function liquidate() -> Admin
+function haltICO() - Admin
+function enableTrading() -> Admin
+function changeSecondaryWallet(address newSecondaryWallet) -> Admin
+function changePriceUpdateWaitingTime(uint256 newPriceUpdateWaitingTime) -> Admin
+function changeMainWallet(address newMainWallet) -> Admin
+function changeIcoStartBlock(uint256 newIcoStartBlock) -> Admin
+function changeIcoEndBlock(uint256 newIcoEndBlock) -> Admin
+
+function allowance(address _owner, address _spender) -> None
+function approve(address _spender, uint256 _value) -> None
+function changeApproval(address _spender, uint256 _oldValue, uint256 _newValue) -> None
+function transfer(address _to, uint256 _value) -> None
+function transferFrom(address _from, address _to, uint256 _value) -> None
+function changeApproval(address _spender, uint256 _oldValue, uint256 _newValue) -> None
+function buyToAccredited(address investor) -> None
+function buyTo(address investor) -> None
+function buyAccredited() -> None
+function buy() -> None
+function approve(address _spender, uint256 _value) -> None
